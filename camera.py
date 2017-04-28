@@ -1,12 +1,11 @@
-import io
 import picamera
 from gpiozero import MotionSensor
-
 
 pir = MotionSensor(4)
 camera = picamera.PiCamera()
 stream = picamera.PiCameraCircularIO(camera, seconds=20)
 camera.start_recording(stream, format='h264')
+
 try:
     while True:
         camera.wait_recording(1)
