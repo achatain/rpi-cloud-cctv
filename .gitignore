@@ -1,2 +1,5 @@
 .idea/
+
+*.bak
 *.log
+*.pyc
