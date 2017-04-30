@@ -16,6 +16,7 @@ class DirectoryWatcher:
         self.directory_to_watch = directory_to_watch
         self.file_added_callback = file_added_callback
         self.file_removed_callback = file_removed_callback
+        logger.info('Initiated DirectoryWatcher')
 
     def for_each_file_do(self, callback):
         while 1:

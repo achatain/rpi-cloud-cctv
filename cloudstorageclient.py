@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 class CloudStorageClient:
     def __init__(self, bucket_name):
         self.bucket_name = bucket_name
+        logger.info('Initiated CloudStorageClient')
 
     def upload(self, directory, file_name):
         client = storage.Client()
