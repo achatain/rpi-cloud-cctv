@@ -3,6 +3,7 @@ import logging
 import thread
 from cloudstorageclient import CloudStorageClient
 from directorywatcher import DirectoryWatcher
+from rpicamera import RpiCamera
 
 required_envs = {
     'video_dir': 'RPI_CLOUD_CCTV_VIDEO_DIR',
@@ -19,6 +20,9 @@ def main():
     client = CloudStorageClient(os.getenv(required_envs['gcloud_bucket']))
     dw = DirectoryWatcher(os.getenv(required_envs['video_dir']))
     thread.start_new_thread(dw.for_each_file_do(client.upload), None)
+
+    rpi_camera = RpiCamera(os.getenv(required_envs['video_dir']))
+    thread.start_new_thread(rpi_camera.run(), None)
 
     while 1:
         pass
