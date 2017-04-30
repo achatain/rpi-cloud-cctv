@@ -20,9 +20,11 @@ def main():
     client = CloudStorageClient(os.getenv(required_envs['gcloud_bucket']))
     dw = DirectoryWatcher(os.getenv(required_envs['video_dir']))
     dw_thread = threading.Thread(target=dw.for_each_file_do, args=(client.upload,))
+    dw_thread.setDaemon(True)
 
     rpi_camera = RpiCamera(os.getenv(required_envs['video_dir']))
-    rpi_camera_thread = threading.Thread(rpi_camera.run())
+    rpi_camera_thread = threading.Thread(target=rpi_camera.run)
+    rpi_camera_thread.setDaemon(True)
 
     dw_thread.start()
     rpi_camera_thread.start()
