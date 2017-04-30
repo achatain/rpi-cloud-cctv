@@ -16,6 +16,7 @@ class CloudStorageClient:
         blob = bucket.blob(file_name)
         path = directory + file_name
         try:
+            logger.info('Started uploading file %s ...', path)
             blob.upload_from_filename(path)
         except (ValueError, GoogleCloudError) as ex:
             logger.error('Unable to upload file %s%s [%s]', directory, file_name, ex)

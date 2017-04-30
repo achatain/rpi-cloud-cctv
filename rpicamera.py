@@ -11,7 +11,6 @@ class RpiCamera:
         self.video_dir = video_dir
         self.pir = MotionSensor(4)
         self.camera = picamera.PiCamera()
-        self.camera.framerate = 15
         self.stream = picamera.PiCameraCircularIO(self.camera, seconds=10)
         self.camera.start_recording(self.stream, format='h264')
         logger.info('Initiated RpiCamera with video directory being [%s]' % self.video_dir)
