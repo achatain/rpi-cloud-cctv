@@ -42,6 +42,6 @@ class RpiCamera:
                         logger.info('Back to normal!')
                         self.write_buffer_to_disk()
                         motion_in_progress = False
-                    logger.info('No motion detected... you can relax!')
+                    logger.debug('No motion detected... you can relax!')
         finally:
             self.camera.stop_recording()
