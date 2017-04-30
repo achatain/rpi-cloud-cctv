@@ -1,6 +1,6 @@
 import os
 import logging
-import thread
+import multiprocessing
 from cloudstorageclient import CloudStorageClient
 from directorywatcher import DirectoryWatcher
 from rpicamera import RpiCamera
@@ -19,10 +19,12 @@ def main():
     # This will monitor the directory where videos are stored and upload each video file to the cloud
     client = CloudStorageClient(os.getenv(required_envs['gcloud_bucket']))
     dw = DirectoryWatcher(os.getenv(required_envs['video_dir']))
-    thread.start_new_thread(dw.for_each_file_do(client.upload), None)
+    dw_process = multiprocessing.Process(target=dw.for_each_file_do, args=client.upload)
+    dw_process.start()
 
     rpi_camera = RpiCamera(os.getenv(required_envs['video_dir']))
-    thread.start_new_thread(rpi_camera.run(), None)
+    rpi_camera_process = multiprocessing.Process(target=rpi_camera.run)
+    rpi_camera_process.start()
 
     while 1:
         pass
