@@ -20,10 +20,15 @@ class DirectoryWatcher:
 
     def for_each_file_do(self, callback):
         while 1:
+            logger.info('List files...')
             files = listdir(self.directory_to_watch)
             for file_name in files:
+                logger.info('Found file with name %s' % file_name)
                 if isfile(self.directory_to_watch + file_name) and file_name.endswith('.h264'):
+                    logger.info('File with name %s eligible for callback %s' % file_name, callback)
                     callback(self.directory_to_watch, file_name)
+                else:
+                    logger.info('File with name %s not eligible for callback' % file_name)
             sleep(1)
 
     def watch(self):
