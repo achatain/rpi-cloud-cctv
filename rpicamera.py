@@ -16,7 +16,7 @@ class RpiCamera:
         logger.info('Initiated RpiCamera with video directory being [%s]' % self.video_dir)
 
     def motion_detected(self):
-        return self.pir.motion_detected()
+        return self.pir.motion_detected
 
     def run(self):
         try:
