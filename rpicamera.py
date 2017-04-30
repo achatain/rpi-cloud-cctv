@@ -2,6 +2,7 @@ import logging
 import picamera
 from gpiozero import MotionSensor
 from datetime import datetime
+from os import rename
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +19,12 @@ class RpiCamera:
     def motion_detected(self):
         return self.pir.motion_detected
 
+    def write_buffer_to_disk(self):
+        file_name = self.video_dir + datetime.now().strftime("%Y-%m-%d_%H.%M.%S") + '.h264'
+        temp_file_name = file_name + '.tmp'
+        self.stream.copy_to(temp_file_name)
+        rename(temp_file_name, file_name)
+
     def run(self):
         motion_in_progress = False
         try:
@@ -28,12 +35,12 @@ class RpiCamera:
                     motion_in_progress = True
                     # TODO Maybe snap a photo?
                     # TODO And surely send a notification of some sort...
-                    self.stream.copy_to(self.video_dir + datetime.now().strftime("%Y-%m-%d_%H.%M.%S") + '.h264')
+                    self.write_buffer_to_disk()
                     self.camera.wait_recording(5)
                 else:
                     if motion_in_progress:
                         logger.info('Back to normal!')
-                        self.stream.copy_to(self.video_dir + datetime.now().strftime("%Y-%m-%d_%H.%M.%S") + '.h264')
+                        self.write_buffer_to_disk()
                         motion_in_progress = False
                     logger.info('No motion detected... you can relax!')
         finally:
