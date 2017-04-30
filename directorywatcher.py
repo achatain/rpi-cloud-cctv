@@ -24,7 +24,7 @@ class DirectoryWatcher:
             for file_name in files:
                 if isfile(self.directory_to_watch + file_name) and not file_name.endswith('.tmp'):
                     callback(self.directory_to_watch, file_name)
-            sleep(1)
+            #sleep(1)
 
     def watch(self):
         current_list = listdir(self.directory_to_watch)
@@ -48,4 +48,4 @@ class DirectoryWatcher:
                         self.file_removed_callback(filename)
 
             current_list = updated_list
-            sleep(1)
+            #sleep(1)
