@@ -22,7 +22,7 @@ class DirectoryWatcher:
         while 1:
             files = listdir(self.directory_to_watch)
             for file_name in files:
-                if isfile(self.directory_to_watch + file_name) and not file_name.endswith('.tmp'):
+                if isfile(self.directory_to_watch + file_name) and file_name.endswith('.h264'):
                     callback(self.directory_to_watch, file_name)
             sleep(1)
 
