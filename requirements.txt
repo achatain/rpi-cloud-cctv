@@ -1,1 +1,2 @@
 google-cloud-storage==1.0.0
+sendgrid==4.1.0

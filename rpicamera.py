@@ -21,6 +21,7 @@ import picamera
 from gpiozero import MotionSensor
 from datetime import datetime
 from os import rename
+from emailclient import EmailClient
 
 logger = logging.getLogger(__name__)
 
@@ -45,37 +46,54 @@ class RpiCamera(object):
         self.camera = picamera.PiCamera()
         self.stream = picamera.PiCameraCircularIO(self.camera, seconds=10)
         self.camera.start_recording(self.stream, format='h264')
+        self.email_client = EmailClient()
         logger.info('Initiated RpiCamera with video directory being [%s]' % self.video_dir)
 
     def motion_detected(self):
         return self.pir.motion_detected
 
-    def build_timestamped_file_name(self):
-        return self.video_dir + datetime.now().strftime("%Y-%m-%d_%H.%M.%S") + '.h264'
+    def build_timestamped_prefix(self):
+        return self.video_dir + datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+
+    def build_video_file_name(self):
+        return self.build_timestamped_prefix() + '.h264'
+
+    def build_image_file_name(self):
+        return self.build_timestamped_prefix() + '.jpg'
 
     def write_buffer_to_disk(self):
-        file_name = self.build_timestamped_file_name()
+        file_name = self.build_video_file_name()
         temp_file_name = file_name + '.tmp'
         self.stream.copy_to(temp_file_name)
         rename(temp_file_name, file_name)
 
+    def notify(self, image_file):
+        self.email_client.send(
+            'RPi Camera Alert',
+            'Motion has been detected by the Raspberry Pi CCTV',
+            attachment_path=image_file)
+
     def run(self):
-        motion_in_progress = False
+        motion_flag = False
         try:
             while 1:
                 self.camera.wait_recording(1)
                 if self.motion_detected():
                     logger.info('ALERT!!! Motion detected :O')
-                    motion_in_progress = True
-                    # TODO Maybe snap a photo?
-                    # TODO And surely send a notification of some sort...
+                    if not motion_flag:
+                        motion_flag = True
+                        image_file = self.build_image_file_name()
+                        temp_image_file = image_file + '.tmp'
+                        self.camera.capture(temp_image_file)
+                        self.notify(temp_image_file)
+                        rename(temp_image_file, image_file)
                     self.write_buffer_to_disk()
                     self.camera.wait_recording(5)
                 else:
-                    if motion_in_progress:
+                    if motion_flag:
                         logger.info('Back to normal!')
                         self.write_buffer_to_disk()
-                        motion_in_progress = False
+                        motion_flag = False
                     else:
                         logger.debug('No motion detected... you can relax!')
         finally:

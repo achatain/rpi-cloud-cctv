@@ -24,11 +24,15 @@ import threading
 from cloudstorageclient import CloudStorageClient
 from directorywatcher import DirectoryWatcher
 from rpicamera import RpiCamera
+from emailclient import *
 
 required_envs = {
     'video_dir': 'RPI_CLOUD_CCTV_VIDEO_DIR',
     'gcloud_bucket': 'RPI_CLOUD_CCTV_BUCKET',
-    'gcloud_credentials': 'GOOGLE_APPLICATION_CREDENTIALS'
+    'gcloud_credentials': 'GOOGLE_APPLICATION_CREDENTIALS',
+    'sendgrid_api_key': 'SENDGRID_API_KEY',
+    'email_recipient': 'RPI_CLOUD_CCTV_EMAIL_RECIPIENT',
+    'email_sender': 'RPI_CLOUD_CCTV_EMAIL_SENDER'
 }
 
 
