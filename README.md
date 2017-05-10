@@ -4,9 +4,12 @@ Raspberry Pi Cloud CCTV
 https://github.com/achatain/rpi-cloud-cctv
 
 ## What is it?
+A Python app for a DIY CCTV
 
-This repo hosts a Python app powering a DIY CCTV made of a Raspberry Pi, a camera module and a PIR (Passive Infrared) motion sensor.
+## What do I need?
+- Raspberry Pi (any model)
+- Pi camera
+- PIR (Passive Infrared) motion sensor
 
-## Notes for installation
-
-This is still pretty much a work in progress... A setup guide will be written soon.
+## How do I set it up?
+Full setup guide coming soon... Most likely will be a simple script to run!
