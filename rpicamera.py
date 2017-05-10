@@ -48,7 +48,7 @@ class RpiCamera(object):
         self.stream = picamera.PiCameraCircularIO(self.camera, seconds=10)
         self.camera.start_recording(self.stream, format=constants.default_video_format)
         self.email_client = EmailClient()
-        logger.info('Initiated RpiCamera with video directory being [%s]' % self.video_dir)
+        logger.info('Initiated RpiCamera with video directory being [%s]', self.video_dir)
 
     def motion_detected(self):
         return self.pir.motion_detected

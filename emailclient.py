@@ -40,8 +40,8 @@ class EmailClient(object):
             else os.getenv(constants.env_email_recipient)
         self.default_sender = default_sender if default_sender is not None \
             else os.getenv(constants.env_email_sender)
-        logger.info('Initiated EmailClient with default sender [%s] and default recipient [%s]'
-                    % (self.default_sender, self.default_recipient))
+        logger.info('Initiated EmailClient with default sender [%s] and default recipient [%s]',
+                    self.default_sender, self.default_recipient)
 
     def send(self, subject, body, sender=None, recipient=None, attachment_path=None):
         """

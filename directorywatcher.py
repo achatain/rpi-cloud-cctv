@@ -50,15 +50,15 @@ class DirectoryWatcher(object):
 
     def for_each_file_do(self, callback):
         while 1:
-            logger.debug('List files in dir %s' % self.directory_to_watch)
+            logger.debug('List files in dir %s', self.directory_to_watch)
             files = listdir(self.directory_to_watch)
             for file_name in files:
-                logger.debug('Found file with name %s' % file_name)
+                logger.debug('Found file with name %s', file_name)
                 if isfile(self.directory_to_watch + file_name) and not file_name.endswith(constants.file_temp_extension):
-                    logger.debug('File with name %s eligible for callback %s' % (file_name, callback))
+                    logger.debug('File with name %s eligible for callback %s', file_name, callback)
                     callback(self.directory_to_watch, file_name)
                 else:
-                    logger.debug('File with name %s not eligible for callback' % file_name)
+                    logger.debug('File with name %s not eligible for callback', file_name)
             sleep(1)
 
     def watch(self):
