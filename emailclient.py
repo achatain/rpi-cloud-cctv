@@ -18,10 +18,10 @@
 
 import logging
 import os
+import constants
 import sendgrid
 import base64
 from sendgrid.helpers.mail import *
-from app import required_envs
 
 logger = logging.getLogger(__name__)
 
@@ -37,9 +37,9 @@ class EmailClient(object):
             The recipient to be used if no other recipient is provided.
         """
         self.default_recipient = default_recipient if default_recipient is not None \
-            else os.getenv(required_envs['email_recipient'])
+            else os.getenv(constants.env_email_recipient)
         self.default_sender = default_sender if default_sender is not None \
-            else os.getenv(required_envs['email_sender'])
+            else os.getenv(constants.env_email_sender)
         logger.info('Initiated EmailClient with default sender [%s] and default recipient [%s]'
                     % (self.default_sender, self.default_recipient))
 
@@ -60,10 +60,10 @@ class EmailClient(object):
         :param str attachment_path:
             Path to an image to attach
         """
-        sg = sendgrid.SendGridAPIClient(apikey=os.environ.get(required_envs['sendgrid_api_key']))
+        sg = sendgrid.SendGridAPIClient(apikey=os.environ.get(constants.env_sendgrid_api_key))
         from_email = Email(self.default_sender if sender is None else sender)
         to_email = Email(self.default_recipient if recipient is None else recipient)
-        content = Content('text/html', body)
+        content = Content(constants.email_content_type, body)
         email = Mail(from_email, subject, to_email, content)
 
         if attachment_path is not None:
@@ -76,8 +76,8 @@ class EmailClient(object):
                 attachment.content = data_b64
 
             parts = attachment_path.split('/')
-            attachment.filename = parts[len(parts) - 1] .rstrip('.tmp')
-            attachment.disposition = 'attachment'
+            attachment.filename = parts[len(parts) - 1].rstrip(constants.file_temp_extension)
+            attachment.disposition = constants.email_attachment_disposition
             email.add_attachment(attachment)
 
         sg.client.mail.send.post(request_body=email.get())

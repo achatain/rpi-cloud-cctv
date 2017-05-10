@@ -21,19 +21,10 @@
 import os
 import logging
 import threading
+import constants
 from cloudstorageclient import CloudStorageClient
 from directorywatcher import DirectoryWatcher
 from rpicamera import RpiCamera
-from emailclient import *
-
-required_envs = {
-    'video_dir': 'RPI_CLOUD_CCTV_VIDEO_DIR',
-    'gcloud_bucket': 'RPI_CLOUD_CCTV_BUCKET',
-    'gcloud_credentials': 'GOOGLE_APPLICATION_CREDENTIALS',
-    'sendgrid_api_key': 'SENDGRID_API_KEY',
-    'email_recipient': 'RPI_CLOUD_CCTV_EMAIL_RECIPIENT',
-    'email_sender': 'RPI_CLOUD_CCTV_EMAIL_SENDER'
-}
 
 
 def main():
@@ -48,28 +39,27 @@ def main():
 
 
 def init_logging():
-    logging.basicConfig(format='%(asctime)s %(levelname)s [%(name)s] %(message)s', filename='rpicloudcctv.log',
-                        level=logging.INFO)
+    logging.basicConfig(format=constants.log_format, filename=constants.log_file_name, level=logging.INFO)
     logging.info('Started rpi-cloud-cctv app')
 
 
 def create_directory_watcher_thread():
-    client = CloudStorageClient(os.getenv(required_envs['gcloud_bucket']))
-    dw = DirectoryWatcher(os.getenv(required_envs['video_dir']))
+    client = CloudStorageClient(os.getenv(constants.env_gcloud_bucket))
+    dw = DirectoryWatcher(os.getenv(constants.env_video_dir))
     dw_thread = threading.Thread(target=dw.for_each_file_do, args=(client.upload,))
     dw_thread.setDaemon(True)
     return dw_thread
 
 
 def create_rpi_camera_thread():
-    rpi_camera = RpiCamera(os.getenv(required_envs['video_dir']))
+    rpi_camera = RpiCamera(os.getenv(constants.env_video_dir))
     rpi_camera_thread = threading.Thread(target=rpi_camera.run)
     rpi_camera_thread.setDaemon(True)
     return rpi_camera_thread
 
 
 def check_config():
-    for env in required_envs.values():
+    for env in constants.required_envs.values():
         if os.getenv(env) is None:
             logging.error('%s env variable is not set', env)
             exit(1)

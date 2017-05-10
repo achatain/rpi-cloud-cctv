@@ -18,6 +18,7 @@
 
 import logging
 import picamera
+import constants
 from gpiozero import MotionSensor
 from datetime import datetime
 from os import rename
@@ -33,7 +34,7 @@ class RpiCamera(object):
     to the disk, then 5 seconds long video are recorded and written to the disk until motion stops.
     """
 
-    def __init__(self, video_dir='/home/pi/Videos', pin=4):
+    def __init__(self, video_dir=constants.default_video_dir, pin=4):
         """
         :param str video_dir:
             The path to the directory where video files are to be saved.
@@ -45,7 +46,7 @@ class RpiCamera(object):
         self.pir = MotionSensor(pin)
         self.camera = picamera.PiCamera()
         self.stream = picamera.PiCameraCircularIO(self.camera, seconds=10)
-        self.camera.start_recording(self.stream, format='h264')
+        self.camera.start_recording(self.stream, format=constants.default_video_format)
         self.email_client = EmailClient()
         logger.info('Initiated RpiCamera with video directory being [%s]' % self.video_dir)
 
@@ -53,17 +54,17 @@ class RpiCamera(object):
         return self.pir.motion_detected
 
     def build_timestamped_prefix(self):
-        return self.video_dir + datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+        return self.video_dir + datetime.now().strftime(constants.file_timestamp_prefix_format)
 
     def build_video_file_name(self):
-        return self.build_timestamped_prefix() + '.h264'
+        return self.build_timestamped_prefix() + constants.file_video_extension
 
     def build_image_file_name(self):
-        return self.build_timestamped_prefix() + '.jpg'
+        return self.build_timestamped_prefix() + constants.file_photo_extension
 
     def write_buffer_to_disk(self):
         file_name = self.build_video_file_name()
-        temp_file_name = file_name + '.tmp'
+        temp_file_name = file_name + constants.file_temp_extension
         self.stream.copy_to(temp_file_name)
         rename(temp_file_name, file_name)
 
@@ -83,7 +84,7 @@ class RpiCamera(object):
                     if not motion_flag:
                         motion_flag = True
                         image_file = self.build_image_file_name()
-                        temp_image_file = image_file + '.tmp'
+                        temp_image_file = image_file + constants.file_temp_extension
                         self.camera.capture(temp_image_file)
                         self.notify(temp_image_file)
                         rename(temp_image_file, image_file)

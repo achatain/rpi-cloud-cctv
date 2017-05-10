@@ -17,6 +17,7 @@
 
 
 import logging
+import constants
 from os import listdir
 from os.path import isfile
 from time import sleep
@@ -53,7 +54,7 @@ class DirectoryWatcher(object):
             files = listdir(self.directory_to_watch)
             for file_name in files:
                 logger.debug('Found file with name %s' % file_name)
-                if isfile(self.directory_to_watch + file_name) and not file_name.endswith('.tmp'):
+                if isfile(self.directory_to_watch + file_name) and not file_name.endswith(constants.file_temp_extension):
                     logger.debug('File with name %s eligible for callback %s' % (file_name, callback))
                     callback(self.directory_to_watch, file_name)
                 else:
@@ -69,13 +70,13 @@ class DirectoryWatcher(object):
             added = diff(updated_list, current_list)
             removed = diff(current_list, updated_list)
 
-            if added.__len__():
+            if len(added):
                 logger.info('File(s) added %s', added)
                 if self.file_added_callback:
                     for filename in added:
                         self.file_added_callback(filename)
 
-            if removed.__len__():
+            if len(removed):
                 logger.info('File(s) removed %s', removed)
                 if self.file_removed_callback:
                     for filename in removed:
