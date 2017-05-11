@@ -17,7 +17,6 @@
 
 
 import logging
-import os
 import constants
 import sendgrid
 import base64
@@ -37,9 +36,9 @@ class EmailClient(object):
             The recipient to be used if no other recipient is provided.
         """
         self.default_recipient = default_recipient if default_recipient is not None \
-            else os.getenv(constants.env_email_recipient)
+            else constants.get_env(constants.env_email_recipient)
         self.default_sender = default_sender if default_sender is not None \
-            else os.getenv(constants.env_email_sender)
+            else constants.get_env(constants.env_email_sender)
         logger.info('Initiated EmailClient with default sender [%s] and default recipient [%s]',
                     self.default_sender, self.default_recipient)
 

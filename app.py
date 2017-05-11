@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import os
 import logging
 import threading
 import constants
@@ -44,15 +43,15 @@ def init_logging():
 
 
 def create_directory_watcher_thread():
-    client = CloudStorageClient(os.getenv(constants.env_gcloud_bucket))
-    dw = DirectoryWatcher(os.getenv(constants.env_video_dir))
+    client = CloudStorageClient(constants.get_env(constants.env_gcloud_bucket))
+    dw = DirectoryWatcher(constants.get_env(constants.env_video_dir))
     dw_thread = threading.Thread(target=dw.for_each_file_do, args=(client.upload,))
     dw_thread.setDaemon(True)
     return dw_thread
 
 
 def create_rpi_camera_thread():
-    rpi_camera = RpiCamera(os.getenv(constants.env_video_dir))
+    rpi_camera = RpiCamera(constants.get_env(constants.env_video_dir))
     rpi_camera_thread = threading.Thread(target=rpi_camera.run)
     rpi_camera_thread.setDaemon(True)
     return rpi_camera_thread
@@ -60,7 +59,7 @@ def create_rpi_camera_thread():
 
 def check_config():
     for env in constants.required_envs.values():
-        if os.getenv(env) is None:
+        if constants.get_env(env) is None:
             logging.error('%s env variable is not set', env)
             exit(1)
 

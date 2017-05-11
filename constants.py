@@ -1,3 +1,5 @@
+import os
+
 # Mandatory environment variables
 required_envs = {
     'video_dir': 'RPI_CLOUD_CCTV_VIDEO_DIR',
@@ -33,3 +35,7 @@ default_video_format = 'h264'
 # Email properties
 email_attachment_disposition = 'attachment'
 email_content_type = 'text/html'
+
+
+def get_env(env):
+    return os.getenv(required_envs[env])
