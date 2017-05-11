@@ -85,7 +85,8 @@ class RpiCamera(object):
                         motion_flag = True
                         image_file = self.build_image_file_name()
                         temp_image_file = image_file + constants.file_temp_extension
-                        self.camera.capture(temp_image_file)
+                        self.camera.capture(image_file)
+                        rename(image_file, temp_image_file)
                         self.notify(temp_image_file)
                         rename(temp_image_file, image_file)
                     self.write_buffer_to_disk()
