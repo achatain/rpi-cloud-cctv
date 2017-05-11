@@ -54,7 +54,7 @@ class DirectoryWatcher(object):
             files = listdir(self.directory_to_watch)
             for file_name in files:
                 logger.debug('Found file with name %s', file_name)
-                if isfile(self.directory_to_watch + file_name) and not file_name.endswith(constants.file_temp_extension):
+                if isfile(self.directory_to_watch + file_name) and file_name.endswith(constants.file_video_extension):
                     logger.debug('File with name %s eligible for callback %s', file_name, callback)
                     callback(self.directory_to_watch, file_name)
                 else:

@@ -21,7 +21,7 @@ import picamera
 import constants
 from gpiozero import MotionSensor
 from datetime import datetime
-from os import rename
+from os import rename, remove
 from emailclient import EmailClient
 
 logger = logging.getLogger(__name__)
@@ -84,11 +84,9 @@ class RpiCamera(object):
                     if not motion_flag:
                         motion_flag = True
                         image_file = self.build_image_file_name()
-                        temp_image_file = image_file + constants.file_temp_extension
                         self.camera.capture(image_file)
-                        rename(image_file, temp_image_file)
-                        self.notify(temp_image_file)
-                        rename(temp_image_file, image_file)
+                        self.notify(image_file)
+                        remove(image_file)
                     self.write_buffer_to_disk()
                     self.camera.wait_recording(5)
                 else:
