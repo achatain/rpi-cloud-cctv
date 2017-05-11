@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import os
 import logging
 import threading
 import constants
@@ -59,7 +59,7 @@ def create_rpi_camera_thread():
 
 def check_config():
     for env in constants.required_envs.values():
-        if constants.get_env(env) is None:
+        if os.getenv(env) is None:
             logging.error('%s env variable is not set', env)
             exit(1)
 
