@@ -59,7 +59,7 @@ class EmailClient(object):
         :param str attachment_path:
             Path to an image to attach
         """
-        sg = sendgrid.SendGridAPIClient(apikey=os.environ.get(constants.env_sendgrid_api_key))
+        sg = sendgrid.SendGridAPIClient(apikey=constants.get_env(constants.env_sendgrid_api_key))
         from_email = Email(self.default_sender if sender is None else sender)
         to_email = Email(self.default_recipient if recipient is None else recipient)
         content = Content(constants.email_content_type, body)
